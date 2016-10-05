@@ -58,6 +58,21 @@ defmodule Ex03 do
         5 elegant use of language features or libraries
 
   """
+  #Handle when an empty collection is supplied
+  def pmap([], _p, _f), do: []
+
+  #Handle a situation where process_count is 0
+  def pmap(collection, 0, function) do
+     collection
+     |> Enum.into([])
+     |> process_function( function )
+  end
+
+  #Handle a situation where no function was supplied
+  def pmap(collection, _p, nil) do
+     collection
+     |> Enum.into([])
+  end
 
   def pmap(collection, process_count, function) do
     Enum.chunk(collection, process_count, process_count, [])
