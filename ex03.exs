@@ -60,7 +60,16 @@ defmodule Ex03 do
   """
 
   def pmap(collection, process_count, function) do
-    « your code here »
+    # Find how much work each processor should do
+    chunk_size = collection |> Enum.count |> div(process_count)
+    # Divide collection into even chunks
+    Enum.chunk(collection, chunk_size, chunk_size, [])
+    # Spin off a task for each chunk
+    |> Enum.map(&Task.async(fn -> Enum.map(&1, function) end))
+    # Wait for all the tasks to finish
+    |> Enum.map(&Task.await(&1))
+    # Combine results into a single list
+    |> Enum.concat
   end
 
 end
