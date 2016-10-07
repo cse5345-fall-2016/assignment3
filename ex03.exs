@@ -60,7 +60,27 @@ defmodule Ex03 do
   """
 
   def pmap(collection, process_count, function) do
-    « your code here »
+    amount_of_elements = Enum.count(collection)
+    amount_per_chunk = div(amount_of_elements,process_count)
+    leftover_items = rem(amount_of_elements,process_count)
+    chunky_data =
+      if leftover_items == 0 do
+        Enum.chunk(collection,amount_per_chunk,amount_per_chunk,[])
+      else
+        extra_elements_per_chunk = trunc(Float.ceil(leftover_items/process_count))
+        Enum.chunk(collection,amount_per_chunk+extra_elements_per_chunk,amount_per_chunk+extra_elements_per_chunk,[])
+      end
+    tasks =
+      for process <- 0..process_count-1 do
+        process_chunk = Enum.at(chunky_data,process)
+        mapping_function = fn -> Enum.map(process_chunk,function) end
+        Task.async(mapping_function)
+      end
+    results =
+      for process <- 0..process_count-1 do
+        Task.await(Enum.at(tasks,process))
+      end
+    List.flatten(results)
   end
 
 end
