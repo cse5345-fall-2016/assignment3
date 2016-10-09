@@ -2,8 +2,8 @@
 defmodule Ex02 do
   @me __MODULE__
 
-  def new_global_counter do 
-    Agent.start(fn-> 0 end, name: @me)
+  def new_global_counter(val \\ 0) do 
+    Agent.start(fn-> val end, name: @me)
   end
 
   def global_next_value do

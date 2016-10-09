@@ -29,7 +29,7 @@ defmodule Ex01 do
   
   def counter(value \\ 0) do
     receive do
-      {:next, pid}->send pid, {:next_is, value}
+      {:next, from}->send from, {:next_is, value}
     end
     counter(value+1)
   end
@@ -44,6 +44,7 @@ defmodule Ex01 do
       {:next_is, value}-> value
     end
   end 
+
 end
 
 ExUnit.start()

@@ -64,7 +64,7 @@ defmodule Ex03 do
     Enum.chunk(collection, size, size, [])
     |> Enum.map(&(Task.async(fn ->Enum.map(&1, function) end))) 
     |> Enum.map(&Task.await/1)
-    |> Enum.concat
+    |>Enum.concat
   end
 end
 
