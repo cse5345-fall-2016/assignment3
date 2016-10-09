@@ -60,20 +60,22 @@ defmodule Ex03 do
   """
 
   def pmap(collection, process_count, function) do
-    me = self
-    collection
-      |>Enum.chunk(div(Enum.count(collection),process_count),
-        div(Enum.count(collection),process_count),[])
+      Task.await(chunkTask(collection, process_count))
       |>Enum.map(fn(elem) ->
-        spawn_link fn ->
-          send me, {self, elem } end end)
-      |> Enum.map(fn (pid) ->
-        receive do
-          { ^pid, elem } ->
-            Enum.map(elem, function) end
-        end)
+        runTask(elem,function) end)
+      |> Enum.map(&Task.await/1)
       |> Enum.concat
   end
+
+  def runTask(elem, function) do
+    Task.async(fn -> Enum.map(elem, function) end)
+  end
+
+  def chunkTask(collection, process_count) do
+    count = div(Enum.count(collection),process_count)
+    Task.async(fn ->Enum.chunk(collection, count, count,[]) end )
+  end
+
 
 end
 
