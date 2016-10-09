@@ -94,6 +94,18 @@ defmodule TestEx03 do
   use ExUnit.Case
   import Ex03
 
+  #test "pmap with empty collection" do
+  #  assert pmap([], 0, &(&1+1)) == []
+  #end
+
+  #test "pmap with 0 process" do
+  #  assert pmap(1..10, 0, &(&1+1)) == 2..11 |> Enum.into([])
+  #end
+
+  #test "pmap with empty function" do
+  #  assert pmap(1..10, 2, nil) == 1..10 |> Enum.into([])
+  #end
+
   test "pmap with 1 process" do
     assert pmap(1..10, 1, &(&1+1)) == 2..11 |> Enum.into([])
   end
