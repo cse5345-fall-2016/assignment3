@@ -3,17 +3,17 @@ defmodule Ex02 do
 
   @me __MODULE__
 
-  def new_counter(value \\ 0) do
-    { :ok, agent } = Agent.start(fn -> value end)
+  def new_global_counter(value \\ 0) do
+    Agent.start(fn -> value end, name: @me)
+  end
+
+  def new_counter(initial_value \\ 0) do
+    { :ok, agent } = Agent.start(fn -> initial_value end)
     agent
   end
 
   def next_value(counter) do
     Agent.get_and_update(counter, &{ &1, (&1 + 1) } )
-  end
-
-  def new_global_counter(value \\ 0) do
-    Agent.start(fn -> value end, name: @me)
   end
 
   def global_next_value do
