@@ -60,9 +60,9 @@ defmodule Ex03 do
   """
 
   def pmap(collection, process_count, function) do
-    chunk_size = div Enum.count(collection), process_count
+    chunk_size = Enum.count(collection) |> div(process_count)
     Enum.chunk(collection, chunk_size, chunk_size, [])
-    |> Stream.map(fn chunk -> Task.async(fn -> Enum.map(chunk, function) end) end)
+    |> Enum.map(fn chunk -> Task.async(fn -> Enum.map(chunk, function) end) end)
     |> Enum.map(&Task.await/1)
     |> Enum.concat
   end
