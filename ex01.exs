@@ -34,8 +34,8 @@ defmodule Ex01 do
     counter(value + 1)
   end
 
-  def new_counter(value) do
-    spawn __MODULE__, :counter, [value]
+  def new_counter(val) do
+    spawn __MODULE__, :counter, [val]
   end
 
   def next_value(count) do
