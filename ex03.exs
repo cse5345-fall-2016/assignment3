@@ -64,15 +64,12 @@ defmodule Ex03 do
     amount_per_chunk = div(amount_of_elements,process_count)
     leftover_items = rem(amount_of_elements,process_count)
     chunky_data = divide_data(collection,amount_per_chunk,leftover_items)
-    tasks =
-      Enum.map(chunky_data, fn process_chunk->
-        Task.async( fn -> Enum.map(process_chunk,function) end)
-      end)
-    results =
-      Enum.map(tasks, fn task ->
-        Task.await(task)
-      end)
-    List.flatten(results)
+
+    Enum.map(chunky_data, fn process_chunk->
+      Task.async( fn -> Enum.map(process_chunk,function) end)
+    end)
+    |> Enum.map(fn task -> Task.await(task) end)
+    |> List.flatten()
   end
 
   defp divide_data(collection,amount_per_chunk,0) do
