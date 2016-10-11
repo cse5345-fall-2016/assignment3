@@ -40,11 +40,11 @@ defmodule Ex03 do
   ## Marks available: 30
 
       Pragmatics
-        4  does the code compile and run
+        4 does the code compile and run
         5	does it produce the correct results on any valid data
 
       Tested
-      if tests are provided as part of the assignment: 	
+      if tests are provided as part of the assignment:
         5	all pass
 
       Aesthetics
@@ -58,9 +58,32 @@ defmodule Ex03 do
         5 elegant use of language features or libraries
 
   """
+  #Handle when an empty collection is supplied
+  def pmap([], _p, _f), do: []
+
+  #Handle a situation where process_count is 0
+  def pmap(collection, 0, function) do
+     collection
+     |> Enum.into([])
+     |> process_function( function )
+  end
+
+  #Handle a situation where no function was supplied
+  def pmap(collection, _p, nil) do
+     collection
+     |> Enum.into([])
+  end
 
   def pmap(collection, process_count, function) do
-    « your code here »
+    Enum.chunk(collection, process_count, process_count, [])
+    |> Enum.map(fn (list) -> list end )
+    |> Enum.concat
+    |> process_function( function )
+  end
+
+  defp process_function(collection, function) do
+    Enum.map(collection, &Task.async(fn -> function.(&1) end))
+    |> Enum.map(&Task.await( &1))
   end
 
 end
@@ -70,6 +93,18 @@ ExUnit.start
 defmodule TestEx03 do
   use ExUnit.Case
   import Ex03
+
+  #test "pmap with empty collection" do
+  #  assert pmap([], 0, &(&1+1)) == []
+  #end
+
+  #test "pmap with 0 process" do
+  #  assert pmap(1..10, 0, &(&1+1)) == 2..11 |> Enum.into([])
+  #end
+
+  #test "pmap with empty function" do
+  #  assert pmap(1..10, 2, nil) == 1..10 |> Enum.into([])
+  #end
 
   test "pmap with 1 process" do
     assert pmap(1..10, 1, &(&1+1)) == 2..11 |> Enum.into([])
@@ -96,5 +131,5 @@ defmodule TestEx03 do
     assert result2 == result1
     assert time2 < time1 * 0.8
   end
-  
+
 end
