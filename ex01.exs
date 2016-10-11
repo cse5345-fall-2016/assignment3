@@ -1,5 +1,6 @@
 
 defmodule Ex01 do
+   @thing __MODULE__
 
   @moduledoc """
 
@@ -35,7 +36,7 @@ defmodule Ex01 do
   end
 
   def new_counter(begin) do
-    spawn __MODULE__, :counter, [begin]
+    spawn @thing, :counter, [begin]
   end
 
   def next_value(counter) do
