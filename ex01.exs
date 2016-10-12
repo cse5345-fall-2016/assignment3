@@ -35,18 +35,17 @@ defmodule Ex01 do
     end
   end
 
-  # def new_counter(0) do
-  #   counter()
-  # end
+
   def new_counter(value) do
-    #counter(value)
-    count = spawn Ex01, :counter, []
+    spawn Ex01, :counter, [value]
+  end
+
+  def next_value(count) do
     send count, { :next, self }
     receive do
       { :next_is, value } ->
         value
     end
-    counter(value)
   end
 
 
