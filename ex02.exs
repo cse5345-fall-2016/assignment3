@@ -35,10 +35,19 @@ defmodule Test do
   test "counter using an agent" do
     { :ok, counter } = Agent.start_link(fn -> 0 end)
 
-    value   = Agent.get_and_update(counter, &(&1))
+    # COMMENT: not sure if the commented version was too many lines, not sure if
+    # you wanted just one line of code. I kinda like the commented one better though
+    # because it just makes more sense to me.
+    # Agent.update(counter, &(&1))
+    # value = Agent.get(counter, &(&1))
+
+    value   = Agent.get_and_update(counter, fn state -> {state, state + 1} end)
     assert value == 0
 
-    value   = Agent.get_and_update(counter, &(&1 + 1))
+    # Agent.update(counter, &(&1 + 1))
+    # value = Agent.get(counter, &(&1))
+
+    value   = Agent.get_and_update(counter, fn state -> {state, state + 1} end)
     assert value == 1
   end
 
