@@ -8,6 +8,19 @@ defmodule Ex02 do
   def next_value({:ok, counter}) do
     Agent.get_and_update(counter, fn c -> {c, c+1} end)
   end
+
+  #####
+  ## Note: I may forget to ask in class, so here it is. Is it better to 
+  ## capitalize for an atom or use the "@" symbol for a module attribute/constant?
+  #####
+  def new_global_counter(value \\ 0) do
+    Agent.start_link(fn -> value end, name: Counter)
+  end
+
+  def global_next_value do
+    Agent.get_and_update(Counter, fn c -> {c, c+1} end)
+  end
+
 end
 
 ExUnit.start()
@@ -66,12 +79,12 @@ defmodule Test do
   that agent into calls to `global_next_value`?
   """
 
-  # test "global counter" do
-  #   Ex02.new_global_counter
-  #   assert Ex02.global_next_value == 0
-  #   assert Ex02.global_next_value == 1
-  #   assert Ex02.global_next_value == 2
-  # end
+  test "global counter" do
+    Ex02.new_global_counter
+    assert Ex02.global_next_value == 0
+    assert Ex02.global_next_value == 1
+    assert Ex02.global_next_value == 2
+  end
 end
 
 
