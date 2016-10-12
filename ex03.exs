@@ -69,9 +69,8 @@ defmodule Ex03 do
 
   def proecssSplitListInBackground(collection,func) do
       collection
-      |> Enum.map(fn(list)->
-          Task.async(fn -> list |> processInBackground(func) end)
-          end)
+      |> Enum.map(fn(list)-> Task.async(fn -> list
+      |> processInBackground(func) end) end)
       |> Enum.map(&Task.await/1)
    end
 
