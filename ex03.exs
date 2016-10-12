@@ -44,7 +44,7 @@ defmodule Ex03 do
         5	does it produce the correct results on any valid data
 
       Tested
-      if tests are provided as part of the assignment: 	
+      if tests are provided as part of the assignment:
         5	all pass
 
       Aesthetics
@@ -60,7 +60,14 @@ defmodule Ex03 do
   """
 
   def pmap(collection, process_count, function) do
-    « your code here »
+    chunk_size = Float.ceil(Enum.count(collection)/process_count)
+    chunks = Enum.chunk(collection, round(chunk_size), round(chunk_size), [])
+    chunks = Enum.map(chunks, fn chunk ->
+      chunk
+        |> Enum.map(&(Task.async(fn -> function.(&1) end)))
+        |> Enum.map(&Task.await/1)
+    end)
+    Enum.concat(chunks)
   end
 
 end
@@ -96,5 +103,5 @@ defmodule TestEx03 do
     assert result2 == result1
     assert time2 < time1 * 0.8
   end
-  
+
 end
