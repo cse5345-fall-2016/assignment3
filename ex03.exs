@@ -60,7 +60,18 @@ defmodule Ex03 do
   """
 
   def pmap(collection, process_count, function) do
-    « your code here »
+
+  chunk_size = Enum.count(collection) |> div(process_count)
+  
+  collection
+  #divide into lists contains the length of chunk_size each
+      |>Enum.chunk(chunk_size, chunk_size, [])
+      |>Enum.map(&(Task.async(fn -> Enum.map(&1, function) end)))
+  #wait others finish
+      |>Enum.map(&(Task.await(&1)))
+  #combine into single list
+      |>Enum.concat
+  
   end
 
 end
