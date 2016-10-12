@@ -1,5 +1,25 @@
 defmodule Ex03 do
 
+    def pmap(collection, process_count, function) do
+        # Generate number of items to process per available processor
+        items = Enum.count(collection)/process_count 
+        |> Float.ceil
+        |> round
+
+        Enum.chunk(collection, items,items,[])
+        |> subMap(function)
+    end
+
+    defp subMap(subItems, func) do
+        # Generate Task for each item to running map on a sub list
+        Enum.map(subItems, &(Task.async(fn -> Enum.map(&1, func) end)))
+        # Wait for each Task to finish  
+        |> Enum.map(&(Task.await(&1)))
+        # Concate all together
+        |> Enum.concat
+    end
+
+
   @moduledoc """
 
   `Enum.map` takes a collection, applies a function to each element in
@@ -58,13 +78,7 @@ defmodule Ex03 do
         5 elegant use of language features or libraries
 
   """
-
-  def pmap(collection, process_count, function) do
-    « your code here »
-  end
-
 end
-
 
 ExUnit.start
 defmodule TestEx03 do
