@@ -63,23 +63,11 @@ defmodule Ex03 do
     collection
     |> Enum.to_list
     |> Enum.chunk(process_count,process_count,[])
-    |> run(function)
+    |> proecssSplitListInBackground(function)
     |> Enum.concat
   end
 
-  def processSplitList([head | tail], func) do
-    [processInBackground(head, func) | processSplitList(tail,func)]
-  end
-
-  def processSplitList([], _func), do: []
-
- def processInBackground(collection, func) do
-    collection
-   |> Enum.map(&(Task.async(fn -> func.(&1) end)))
-   |> Enum.map(&Task.await/1)
-  end
-
-  def run(collection,func) do
+  def proecssSplitListInBackground(collection,func) do
       collection
       |> Enum.map(fn(list)->
           Task.async(fn -> list |> processInBackground(func) end)
@@ -87,6 +75,11 @@ defmodule Ex03 do
       |> Enum.map(&Task.await/1)
    end
 
+   def processInBackground(collection, func) do
+      collection
+     |> Enum.map(&(Task.async(fn -> func.(&1) end)))
+     |> Enum.map(&Task.await/1)
+    end
 end
 
 
