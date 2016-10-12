@@ -2,7 +2,11 @@
 defmodule Ex02 do
 
   def new_counter(start_value \\ 0) do
-    Agent
+    {:ok, counter} = Agent.start_link(fn-> start_value end)
+  end
+
+  def next_value({:ok, counter}) do
+    Agent.get_and_update(counter, &{&1, (&1+1)})
   end
 
 end
