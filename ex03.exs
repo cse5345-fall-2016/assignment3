@@ -44,7 +44,7 @@ defmodule Ex03 do
         5	does it produce the correct results on any valid data
 
       Tested
-      if tests are provided as part of the assignment: 	
+      if tests are provided as part of the assignment:
         5	all pass
 
       Aesthetics
@@ -60,7 +60,13 @@ defmodule Ex03 do
   """
 
   def pmap(collection, process_count, function) do
-    « your code here »
+    chunk_size = Enum.count(collection) |> div(process_count)
+
+    collection
+      |> Enum.chunk(chunk_size, chunk_size, [])
+      |> Enum.map(&(Task.async(fn -> Enum.map(&1, function) end)))
+      |> Enum.map(&(Task.await(&1)))
+      |> Enum.concat
   end
 
 end
@@ -70,6 +76,7 @@ ExUnit.start
 defmodule TestEx03 do
   use ExUnit.Case
   import Ex03
+
 
   test "pmap with 1 process" do
     assert pmap(1..10, 1, &(&1+1)) == 2..11 |> Enum.into([])
@@ -96,5 +103,5 @@ defmodule TestEx03 do
     assert result2 == result1
     assert time2 < time1 * 0.8
   end
-  
+
 end
