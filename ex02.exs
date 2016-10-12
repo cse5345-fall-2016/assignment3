@@ -58,6 +58,9 @@ defmodule Test do
 
      value   = Agent.get(counter, &(&1+1))
      assert value == 1
+     # Another solution would be
+     # Agent.update(counter, &(&1+1))
+     # Agent.get(counter, &(&1))
    end
 
   @doc """
