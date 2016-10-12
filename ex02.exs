@@ -1,12 +1,22 @@
 
 defmodule Ex02 do
 
+  @counter __MODULE__
+
   def new_counter(start_value \\ 0) do
     {:ok, counter} = Agent.start_link(fn-> start_value end)
   end
 
-  def next_value({:ok, counter}) do
-    Agent.get_and_update(counter, &{&1, (&1+1)})
+  def next_value({ :ok, counter }) do
+    Agent.get_and_update(counter, &{&1, (&1+1) } )
+  end
+
+  def new_global_counter(start_value \\ 0) do
+    {:ok, counter} = Agent.start_link(fn -> start_value end, name: @counter)
+  end
+
+  def global_next_value do
+    Agent.get_and_update(@counter, &{&1, (&1+1) } )
   end
 
 end
@@ -68,10 +78,10 @@ defmodule Test do
   that agent into calls to `global_next_value`?
   """
 
-  # test "global counter" do
-  #   Ex02.new_global_counter
-  #   assert Ex02.global_next_value == 0
-  #   assert Ex02.global_next_value == 1
-  #   assert Ex02.global_next_value == 2
-  # end
+  test "global counter" do
+    Ex02.new_global_counter
+    assert Ex02.global_next_value == 0
+    assert Ex02.global_next_value == 1
+    assert Ex02.global_next_value == 2
+  end
 end
