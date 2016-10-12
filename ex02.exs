@@ -1,6 +1,13 @@
 
 defmodule Ex02 do
+  def new_counter(value \\ 0) do
+    { :ok, counter } = Agent.start_link(fn -> value end)
+    IO.puts "count: #{counter}"
+  end
 
+  def next_value(counter) do
+    Agent.get_and_update(counter, fn c -> {c, c+1} end)
+  end
 end
 
 ExUnit.start()
@@ -23,7 +30,6 @@ defmodule Test do
         2 is the program well laid out,  appropriately using indentation,
           blank lines, vertical alignment
   """
-  
 
   @doc """
   First uncomment this test. Here you will be inserting code
@@ -35,10 +41,10 @@ defmodule Test do
   test "counter using an agent" do
     { :ok, counter } = Agent.start_link(fn -> 0 end)
   
-    value   = Agent.get(counter, &(&1))
+    value   = Agent.get_and_update(counter, fn c -> {c, c+1} end)
     assert value == 0
   
-    value   = Agent.get(counter, &(&1+1))
+    value   = Agent.get_and_update(counter, fn c -> {c, c+1} end)
     assert value == 1
   end
 
@@ -47,11 +53,11 @@ defmodule Test do
   top of this file to make those tests run.
   """
 
-  # test "higher level API interface" do
-  #   count = Ex02.new_counter(5)
-  #   assert  Ex02.next_value(count) == 5
-  #   assert  Ex02.next_value(count) == 6
-  # end
+  #test "higher level API interface" do
+  #  count = Ex02.new_counter(5)
+  #  assert  Ex02.next_value(count) == 5
+  #  assert  Ex02.next_value(count) == 6
+  #end
 
   @doc """
   Last (for this exercise), we'll create a global counter by adding
