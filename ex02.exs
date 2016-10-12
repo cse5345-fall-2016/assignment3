@@ -1,10 +1,10 @@
 
 defmodule Ex02 do
 
-  @me __MODULE__
+  @mod __MODULE__
 
   def new_global_counter(value \\ 0) do
-    Agent.start(fn -> value end, name: @me)
+    Agent.start(fn -> value end, name: @mod)
   end
 
   def new_counter(initial_value \\ 0) do
@@ -17,7 +17,7 @@ defmodule Ex02 do
   end
 
   def global_next_value do
-    Agent.get_and_update(@me, &{ &1, (&1 + 1) } )
+    Agent.get_and_update(@mod, &{ &1, (&1 + 1) } )
   end
 
 end

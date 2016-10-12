@@ -59,9 +59,9 @@ defmodule Ex03 do
 
   """
   def pmap(collection, process_count, function) do
-      chunk_size = ( Enum.count(collection) / process_count )
-      |>Float.ceil
-      |>round
+      chunk_size = Enum.count(collection)
+      |> div(process_count)
+      # Enum |> div is a cleaner way to accomplish Float.ceil |> round
 
       collection
       |> Enum.chunk(chunk_size, chunk_size, [])
