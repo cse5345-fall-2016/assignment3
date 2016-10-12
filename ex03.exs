@@ -44,7 +44,7 @@ defmodule Ex03 do
         5	does it produce the correct results on any valid data
 
       Tested
-      if tests are provided as part of the assignment: 	
+      if tests are provided as part of the assignment:
         5	all pass
 
       Aesthetics
@@ -60,9 +60,29 @@ defmodule Ex03 do
   """
 
   def pmap(collection, process_count, function) do
-    « your code here »
+    segments = round(Enum.count(collection) / process_count)
+    from = self
+    Enum.chunk(collection, segments, segments, [])
+    |> Enum.map(fn(list) -> process_creator(list, from, function) end)
+    |> Enum.map(fn(pid) ->
+        receive do
+          {^pid, result} -> result
+        end
+      end)
+    |> Enum.concat
   end
 
+#========= Helpers ============
+
+  def increment_each(list, function) do
+    Enum.map(list, function)
+  end
+
+  def process_creator(list, from, function) do
+    spawn fn ->
+      (send from, {self, increment_each(list, function) })
+    end
+  end
 end
 
 
@@ -96,5 +116,5 @@ defmodule TestEx03 do
     assert result2 == result1
     assert time2 < time1 * 0.8
   end
-  
+
 end
