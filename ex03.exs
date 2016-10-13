@@ -58,11 +58,14 @@ defmodule Ex03 do
         5 elegant use of language features or libraries
 
   """
-
+  #used async code found at http://elixir-recipes.github.io/concurrency/parallel-map/
   def pmap(collection, process_count, function) do
-    « your code here »
+    size=(Enum.count(collection)/process_count)|>Float.ceil|>round
+    Enum.chunk(collection, size, size, [])
+    |> Enum.map(&(Task.async(fn ->Enum.map(&1, function) end))) 
+    |> Enum.map(&Task.await/1)
+    |>Enum.concat
   end
-
 end
 
 
