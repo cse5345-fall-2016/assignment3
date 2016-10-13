@@ -60,7 +60,18 @@ defmodule Ex03 do
   """
 
   def pmap(collection, process_count, function) do
-    « your code here »
+    # The max process count is one process per item in the collection
+    # (Not very efficient, but it will work)
+    safe_process_count = min(Enum.count(collection), process_count)
+    
+    collection
+    # Split into even chunks, being sure to handle leftovers
+    |> Enum.chunk(safe_process_count, safe_process_count, [])
+    # Create a seperate map task for each chunk
+    |> Enum.map(&Task.async(fn -> Enum.map(&1, function) end))
+    # Await the results...
+    |> Enum.map(&Task.await(&1))
+    |> Enum.concat
   end
 
 end
