@@ -32,7 +32,6 @@ defmodule Ex01 do
       {:next, from}->send from, {:next_is, value}
       counter(value+1)
     end
-    
   end
 
   def new_counter(val) do
@@ -61,11 +60,15 @@ defmodule Test do
     count = spawn Ex01, :counter, []
     send count, { :next, self }
     receive do 
-      { :next_is, value }-> assert value == 0
+      { :next_is, value } -> 
+        assert value == 0
      end
+
      send count, { :next, self }
+     
      receive do
-      { :next_is, value } -> assert value == 1
+      { :next_is, value } -> 
+        assert value == 1
     end
   end
 

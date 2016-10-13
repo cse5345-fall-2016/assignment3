@@ -3,16 +3,16 @@ defmodule Ex02 do
   @me __MODULE__
 
   def new_global_counter(val \\ 0) do 
-    count=Ex02.new_counter(val)
-    Process.register(count, @me)
+    new_counter(val)
+    |> Process.register(@me)
   end
 
   def global_next_value do
-    Ex02.next_value(@me)
+    next_value(@me)
   end
 
   def new_counter(val) do
-    {:ok, counter} = Agent.start fn -> val end
+    {:ok, counter} = Agent.start_link(fn -> val end)
     counter
   end
 
@@ -51,7 +51,7 @@ defmodule Test do
   """
 
   test "counter using an agent" do
-    { :ok, counter } = Agent.start fn -> 0 end 
+    { :ok, counter } = Agent.start_link(fn -> 0 end) 
     value   = Agent.get_and_update(counter, &{&1, (&1+1)})
     assert value == 0
     value   = Agent.get_and_update(counter, &{&1, (&1+1)})
