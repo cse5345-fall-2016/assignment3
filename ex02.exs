@@ -1,7 +1,7 @@
 
 defmodule Ex02 do
 
-  @counter __MODULE__
+  @name __MODULE__
 
   def new_counter(start_value \\ 0) do
     {:ok, counter} = Agent.start_link(fn-> start_value end)
@@ -12,11 +12,11 @@ defmodule Ex02 do
   end
 
   def new_global_counter(start_value \\ 0) do
-    {:ok, counter} = Agent.start_link(fn -> start_value end, name: @counter)
+    {:ok, counter} = Agent.start_link(fn -> start_value end, name: @name)
   end
 
   def global_next_value do
-    Agent.get_and_update(@counter, &{&1, (&1+1) } )
+    Agent.get_and_update(@name, &{&1, (&1+1) } )
   end
 
 end
