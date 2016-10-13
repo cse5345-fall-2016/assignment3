@@ -59,15 +59,25 @@ defmodule Ex03 do
 
   """
 
+  ##QUESTION: is the following multi-line pipe syntax good? or should i remove the
+  # indent from them?
   def pmap(collection, process_count, function) do
     chunk_size = Enum.count(collection) / process_count
       |> Float.ceil
       |> round
 
     collection
-    |> Enum.chunk(chunk_size, chunk_size, [])
-
+      |> Enum.chunk(chunk_size, chunk_size, []) # divides into chunks
+      |> Enum.map(&(Task.async(fn -> Enum.map(&1, function) end)))   # maps the chunks into Tasks and then maps those chunks
+      |> Enum.map(&(Task.await(&1)))
+      |> Enum.concat()
   end
+
+#NOTE TO SELF:
+# ^ Must use Enum.map(&(Task.await(&1))) instead of Enum.map(Task.await(collection))
+# because the compiler then thinks that await has an arity of 2.
+# Can't do Enum.map(Task.await()) because the compiler thinks that await then has
+# an arity of 0.
 
 end
 
