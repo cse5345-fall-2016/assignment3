@@ -62,11 +62,12 @@ defmodule Ex03 do
   def pmap(collection, process_count, function) do
 	no_of_items = Enum.count(collection)/process_count 
 	#size = Enum.count(collection)
-    count = round(Float.ceil(no_of_items/process_count))
-
-    Enum.concat(Enum.map(Enum.map(Enum.chunk(collection, count, count,[]), fn x -> Task.async(fn -> Enum.map(x, function) end) end), fn x -> Task.await(x) end))
-    
-	#Enum.chunk(collection, count, count,[]) |> Enum.map(fn x -> Task.async() end ), fn x -> Task.await(x) end |> Enum.map(fn -> Enum.map(x, function) end)|> Enum.concat()
+    count = Float.ceil(no_of_items/process_count) |> round()    
+	
+	a= Enum.chunk(collection, count, count,[])
+	b=Enum.map(a, fn x -> Task.async(fn -> Enum.map(x, function) end)end)
+	Enum.map(b, fn x -> Task.await(x) end) |>Enum.concat()
+	
 	
   end
 
