@@ -30,8 +30,9 @@ defmodule Ex01 do
   def counter(value \\ 0) do
     receive do
       {:next, from}->send from, {:next_is, value}
+      counter(value+1)
     end
-    counter(value+1)
+    
   end
 
   def new_counter(val) do
@@ -60,15 +61,13 @@ defmodule Test do
     count = spawn Ex01, :counter, []
     send count, { :next, self }
     receive do 
-      { :next_is, value } ->
-        assert value == 0
+      { :next_is, value }-> assert value == 0
      end
      send count, { :next, self }
      receive do
-      { :next_is, value } ->
-        assert value == 1
-      end
+      { :next_is, value } -> assert value == 1
     end
+  end
 
   # then uncomment this one
   # Now we add two new functions to Ex01 that wrap the use of

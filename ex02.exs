@@ -3,11 +3,12 @@ defmodule Ex02 do
   @me __MODULE__
 
   def new_global_counter(val \\ 0) do 
-    Agent.start(fn-> val end, name: @me)
+    count=Ex02.new_counter(val)
+    Process.register(count, @me)
   end
 
   def global_next_value do
-    Agent.get_and_update(@me, &{&1, (&1+1)})
+    Ex02.next_value(@me)
   end
 
   def new_counter(val) do
