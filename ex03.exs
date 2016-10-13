@@ -44,7 +44,7 @@ defmodule Ex03 do
         5	does it produce the correct results on any valid data
 
       Tested
-      if tests are provided as part of the assignment: 	
+      if tests are provided as part of the assignment:
         5	all pass
 
       Aesthetics
@@ -59,9 +59,35 @@ defmodule Ex03 do
 
   """
 
+  ##QUESTION: is the following multi-line pipe syntax good? or should i remove the
+  # indent from them?
   def pmap(collection, process_count, function) do
-    « your code here »
+    chunk_size = Enum.count(collection) / process_count
+      |> Float.ceil
+      |> round
+
+    collection
+      |> Enum.chunk(chunk_size, chunk_size, []) # divides into chunks
+      |> Enum.map(&(Task.async(fn -> Enum.map(&1, function) end)))   # maps the chunks into Tasks and then maps those chunks
+      |> Enum.map(&(Task.await(&1))) # waits for all the above tasks to finish running
+      |> Enum.concat()
   end
+
+#NOTE TO SELF:
+# |> Enum.map(&(Task.async(fn -> Enum.map(&1, function) end))) above does a few things
+# First, it maps the individual chunks of the collection into different tasks, then
+# it maps each of those chunks using the function passed in to pmap. You use the
+# &1 to indicate that you are sending in the individual chunk.
+
+
+# ^ Must use Enum.map(&(Task.await(&1))) instead of Enum.map(Task.await(collection))
+# because the compiler then thinks that await has an arity of 2.
+# Can't do Enum.map(Task.await()) because the compiler thinks that await then has
+# an arity of 0.
+# The &1 for both the .async and .await are to indicate that we are piping in the
+# result of the line above. Since Task.await waits on a task, we are piping in the
+# tasks from above to .await
+
 
 end
 
@@ -96,5 +122,5 @@ defmodule TestEx03 do
     assert result2 == result1
     assert time2 < time1 * 0.8
   end
-  
+
 end

@@ -1,6 +1,20 @@
 
 defmodule Ex02 do
 
+  def new_counter(value) do
+    Agent.start_link(fn -> value end)
+  end
+  def next_value({:ok, counter}) do
+    Agent.get_and_update(counter, fn value -> {value, value + 1} end)
+  end
+
+  def new_global_counter do
+    Agent.start_link(fn -> 0 end, name: __MODULE__)
+  end
+  def global_next_value do
+    Agent.get_and_update(__MODULE__, fn value -> {value, value + 1} end)
+  end
+
 end
 
 ExUnit.start()
@@ -23,7 +37,7 @@ defmodule Test do
         2 is the program well laid out,  appropriately using indentation,
           blank lines, vertical alignment
   """
-  
+
 
   @doc """
   First uncomment this test. Here you will be inserting code
@@ -32,26 +46,36 @@ defmodule Test do
   Replace the placeholders with your code.
   """
 
-  # test "counter using an agent" do
-  #   { :ok, counter } = « your code »
-  # 
-  #   value   = « your code »
-  #   assert value == 0
-  # 
-  #   value   = « your code »
-  #   assert value == 1
-  # end
+  test "counter using an agent" do
+    { :ok, counter } = Agent.start_link(fn -> 0 end)
+
+    # COMMENT: not sure if the commented version was too many lines, not sure if
+    # you wanted just one line of code. I kinda like the commented one better though
+    # because it just makes more sense to me.
+
+    # value = Agent.get(counter, &(&1))
+    # Agent.update(counter, &(&1 + 1))
+    value = Agent.get_and_update(counter, fn value -> {value, value + 1} end)
+    assert value == 0
+
+
+    # value = Agent.get(counter, &(&1))
+    # Agent.update(counter, &(&1 + 1))
+
+    value = Agent.get_and_update(counter, fn value -> {value, value + 1} end)
+    assert value == 1
+  end
 
   @doc """
   Next, uncomment this test, and add code to the Ex02 module at the
   top of this file to make those tests run.
   """
 
-  # test "higher level API interface" do
-  #   count = Ex02.new_counter(5)
-  #   assert  Ex02.next_value(count) == 5
-  #   assert  Ex02.next_value(count) == 6
-  # end
+  test "higher level API interface" do
+    count = Ex02.new_counter(5)
+    assert  Ex02.next_value(count) == 5
+    assert  Ex02.next_value(count) == 6
+  end
 
   @doc """
   Last (for this exercise), we'll create a global counter by adding
@@ -60,16 +84,10 @@ defmodule Test do
   that agent into calls to `global_next_value`?
   """
 
-  # test "global counter" do
-  #   Ex02.new_global_counter
-  #   assert Ex02.global_next_value == 0
-  #   assert Ex02.global_next_value == 1
-  #   assert Ex02.global_next_value == 2
-  # end
+  test "global counter" do
+    Ex02.new_global_counter
+    assert Ex02.global_next_value == 0
+    assert Ex02.global_next_value == 1
+    assert Ex02.global_next_value == 2
+  end
 end
-
-
-
-
-
-
