@@ -41,11 +41,11 @@ defmodule Ex03 do
 
       Pragmatics
         4  does the code compile and run
-        5	does it produce the correct results on any valid data
+        5 does it produce the correct results on any valid data
 
       Tested
-      if tests are provided as part of the assignment: 	
-        5	all pass
+      if tests are provided as part of the assignment:
+        5 all pass
 
       Aesthetics
         4 is the program written in an idiomatic style that uses
@@ -58,10 +58,20 @@ defmodule Ex03 do
         5 elegant use of language features or libraries
 
   """
+    def pmap(collection, process_count, function) do
 
-  def pmap(collection, process_count, function) do
-    « your code here »
-  end
+        count_value = Enum.count(collection)/process_count
+         float_count = Float.ceil(count_value)
+        count = round(float_count)
+
+        # Returns list containing count items
+
+        list = Enum.chunk(collection, count, count,[])
+        new_list = Enum.map(list, fn value -> Task.async(fn -> Enum.map(value, function) end) end)
+        list = Enum.map(new_list, fn value -> Task.await(value) end)
+        Enum.concat(list)
+
+    end
 
 end
 
@@ -96,5 +106,5 @@ defmodule TestEx03 do
     assert result2 == result1
     assert time2 < time1 * 0.8
   end
-  
+
 end
